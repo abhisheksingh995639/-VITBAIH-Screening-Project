@@ -86,7 +86,7 @@ With our Voting Ensemble model's **34.6% Precision**, the RM only has to make ~3
 ---
 
 ## Part 4: Model Interpretability (SHAP Analysis)
-To prove that our model isn't just a "black box", we used SHapley Additive exPlanations (SHAP) to visualize exactly how the model makes decisions globally across the dataset.
+To prove that our model isn't just a "black box", we used SHapley Additive exPlanations (SHAP) to visualize exactly how the model makes decisions globally across the dataset. *(Note: Because SHAP's TreeExplainer does not natively support custom Voting Ensembles, these plots visualize the internal Optuna-tuned CatBoost model, which acts as the primary probabilistic driver for the ensemble.)*
 
 ### Global Feature Importance
 This bar chart shows the average absolute impact each feature has on the model's output magnitude. As discussed, `poutcome` (previous campaign success) dominates the decision-making process.
