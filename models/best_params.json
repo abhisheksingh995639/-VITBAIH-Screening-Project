@@ -1,0 +1,5 @@
+{
+    "model_name": "Voting Ensemble (CatBoost+XGB+LGBM)",
+    "f1_score": 0.445420750253464,
+    "parameters": "Ensemble parameters fixed, CatBoost tuned via Optuna"
+}
