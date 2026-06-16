@@ -117,7 +117,13 @@ def run_predictions_and_shap():
     # Use a random sample of 500 test instances to speed up SHAP calculation
     X_test_sample = X_test.sample(500, random_state=42)
     
-    explainer = shap.TreeExplainer(model)
+    # SHAP TreeExplainer cannot handle the ManualVotingClassifier wrapper.
+    # We pass the underlying CatBoost model (the primary driver) to SHAP to get feature importance.
+    if hasattr(model, 'cat_model'):
+        explainer = shap.TreeExplainer(model.cat_model)
+    else:
+        explainer = shap.TreeExplainer(model)
+        
     shap_values = explainer.shap_values(X_test_sample)
 
     # Plot 1: SHAP Summary Plot (Beeswarm)

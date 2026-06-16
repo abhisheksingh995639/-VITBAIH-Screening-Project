@@ -46,29 +46,35 @@ While a Recall of 62% is exceptionally strong for this dataset, our Precision re
 
 ## Part 2: Required Track B Questions
 
-**1. What percentage of customers in your dataset have `y = yes`? What does this imbalance mean for how you'd evaluate a model?**
-In our dataset, exactly **11.7%** of customers subscribed to the term deposit (`y = yes`). Because of this extreme class imbalance, using standard Accuracy as a metric is highly dangerous; a "dumb" model that simply predicts "No" for every single customer would instantly achieve 88.3% accuracy without learning anything. Therefore, we must evaluate our models using metrics that focus on the minority class, such as Precision, Recall, and the F1 Score.
+> **1. What percentage of customers in your dataset have `y = yes`? What does this imbalance mean for how you'd evaluate a model?**
 
-**2. Which job category had the highest subscription rate? Does this make sense to you intuitively?**
-The **Student** category had the highest subscription rate at **28.7%** (followed by Retired at 22.8%). This intuitively makes a lot of sense. Students generally have very low expenses, often receive stipends, loans, or allowances in lump sums, and banks aggressively target them with zero-fee, high-yield introductory accounts to build lifelong customer loyalty. Retired individuals also make sense as they are actively looking for low-risk, guaranteed-return vehicles (like term deposits) for their fixed savings.
+**Answer:** In our dataset, exactly **11.7%** of customers subscribed to the term deposit (`y = yes`). Because of this extreme class imbalance, using standard Accuracy as a metric is highly dangerous; a "dumb" model that simply predicts "No" for every single customer would instantly achieve 88.3% accuracy without learning anything. Therefore, we must evaluate our models using metrics that focus on the minority class, such as Precision, Recall, and the F1 Score.
 
-**3. Which feature had the highest importance in your tree-based model? Why do you think that is?**
-*Note: Before fixing data leakage, `duration` was the highest. After removing it for real-world viability, the strongest predictor became `poutcome`.*
-Based on the SHAP analysis of our ensemble, `poutcome` (the outcome of the previous marketing campaign) is the strongest predictor. This makes perfect logical sense: past behaviour is the best predictor of future behaviour. A customer who previously responded positively to a bank's outreach is fundamentally more engaged and open to financial products than someone who previously rejected an offer.
+> **2. Which job category had the highest subscription rate? Does this make sense to you intuitively?**
 
-**4. Why is F1 a better metric than accuracy for this particular dataset?**
-F1 Score is the harmonic mean of Precision and Recall. In our business context, we have two competing costs:
+**Answer:** The **Student** category had the highest subscription rate at **28.7%** (followed by Retired at 22.8%). This intuitively makes a lot of sense. Students generally have very low expenses, often receive stipends, loans, or allowances in lump sums, and banks aggressively target them with zero-fee, high-yield introductory accounts to build lifelong customer loyalty. Retired individuals also make sense as they are actively looking for low-risk, guaranteed-return vehicles (like term deposits) for their fixed savings.
+
+> **3. Which feature had the highest importance in your tree-based model? Why do you think that is?**
+> *(Note: Before fixing data leakage, `duration` was the highest. After removing it for real-world viability, the strongest predictor became `poutcome`.)*
+
+**Answer:** Based on the SHAP analysis of our ensemble, `poutcome` (the outcome of the previous marketing campaign) is the strongest predictor. This makes perfect logical sense: past behaviour is the best predictor of future behaviour. A customer who previously responded positively to a bank's outreach is fundamentally more engaged and open to financial products than someone who previously rejected an offer.
+
+> **4. Why is F1 a better metric than accuracy for this particular dataset?**
+
+**Answer:** F1 Score is the harmonic mean of Precision and Recall. In our business context, we have two competing costs:
 *   **False Positives (Precision drop):** The model predicts "Yes", but the customer says "No". This wastes the Relationship Manager's time making a useless phone call.
 *   **False Negatives (Recall drop):** The model predicts "No", but the customer would have said "Yes". This costs the bank direct revenue from a missed sale.
 F1 is the best metric because it strictly penalizes models that sacrifice one for the other (e.g., calling everyone, or calling no one), finding the optimal balance for the business.
 
-**5. Pick one of your 5 sample predictions. Do you actually agree with the model's call, given that customer's features? Walk through your thinking.**
-*Sample Customer ID: 24040*
+> **5. Pick one of your 5 sample predictions. Do you actually agree with the model's call, given that customer's features? Walk through your thinking.**
+
+**Sample Customer ID:** 24040
 *   **Profile:** Age 33, management (tertiary education)
 *   **Finances:** Balance €0, Housing Loan: yes, Personal Loan: no
 *   **Campaign:** Previous outcome: unknown
 *   **Model Prediction:** No (11.4% probability)
-**Agreement:** I completely agree with the model's prediction here. This customer has exactly zero euros in their account balance and currently holds a housing loan (mortgage). Even though they are in a well-paying "management" job, someone with zero liquidity and active debt is simply not in a financial position to lock cash away into a fixed term deposit. The model correctly identified this severe negative financial constraint.
+
+**Answer (Agreement):** I completely agree with the model's prediction here. This customer has exactly zero euros in their account balance and currently holds a housing loan (mortgage). Even though they are in a well-paying "management" job, someone with zero liquidity and active debt is simply not in a financial position to lock cash away into a fixed term deposit. The model correctly identified this severe negative financial constraint.
 
 ---
 
@@ -85,7 +91,7 @@ To prove that our model isn't just a "black box", we used SHapley Additive exPla
 ### Global Feature Importance
 This bar chart shows the average absolute impact each feature has on the model's output magnitude. As discussed, `poutcome` (previous campaign success) dominates the decision-making process.
 
-![SHAP Bar Plot - Global Feature Importance](assets/shap_bar_plot.png)
+![SHAP Bar Plot - Global Feature Importance](./assets/shap_bar_plot.png)
 
 ### Directional Impact (Beeswarm)
 This chart is even more insightful. It shows not just *which* features matter, but *how* they drive the prediction:
@@ -93,4 +99,4 @@ This chart is even more insightful. It shows not just *which* features matter, b
 *   **Blue dots** represent low feature values (e.g., "No" for `poutcome_success` or a Low Account Balance).
 *   Dots further to the right actively push the model toward predicting "Yes".
 
-![SHAP Summary Plot - Directional Impact](assets/shap_summary_plot.png)
+![SHAP Summary Plot - Directional Impact](./assets/shap_summary_plot.png)
